@@ -29,7 +29,7 @@ impl JsToOxc {
         let return_type = quote! { NONE };
         let body = self.gen_option(&node.body, |body| self.gen_function_body(body));
         quote! {
-            #ast_builder.declaration_function(#r#type, #span, #id, #generator, #r#async, #declare, #type_parameters, #this_param, #params, #return_type, #body)
+            #ast_builder.declaration_function(#span, #r#type, #id, #generator, #r#async, #declare, #type_parameters, #this_param, #params, #return_type, #body)
         }
       }
       Declaration::ClassDeclaration(node) => {

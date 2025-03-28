@@ -21,8 +21,8 @@ pub fn generate_expression(source: &str, ast_builder: &str, span: &str) -> JsToO
   if let Err(errors) = expression {
     return JsToOxcResult { result: String::new(), errors: Some(format_errors(errors)) };
   }
-  let gen = JsToOxc { ast_builder: quote! { __ast_builder }, span: quote! { __span } };
-  let tokens = gen.gen_expression(&expression.unwrap());
+  let g = JsToOxc { ast_builder: quote! { __ast_builder }, span: quote! { __span } };
+  let tokens = g.gen_expression(&expression.unwrap());
   JsToOxcResult { result: apply_aliases(tokens.to_string(), ast_builder, span), errors: None }
 }
 
@@ -32,8 +32,8 @@ pub fn generate_program(source: &str, ast_builder: &str, span: &str) -> JsToOxcR
   let source_type = SourceType::default();
   let parsed = Parser::new(&allocator, source, source_type).parse();
   let program = parsed.program;
-  let gen = JsToOxc { ast_builder: quote! { __ast_builder }, span: quote! { __span } };
-  let tokens = gen.gen_program(&program);
+  let g = JsToOxc { ast_builder: quote! { __ast_builder }, span: quote! { __span } };
+  let tokens = g.gen_program(&program);
   let result = apply_aliases(tokens.to_string(), ast_builder, span);
   JsToOxcResult { result, errors: Some(format_errors(parsed.errors)) }
 }

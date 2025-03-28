@@ -25,7 +25,7 @@ self.ast_builder.expression_call(
     self.ast_builder.member_expression_static(
       SPAN,
       self.ast_builder
-        .expression_identifier_reference(SPAN, "console"),
+        .expression_identifier(SPAN, "console"),
       self.ast_builder.identifier_name(SPAN, "log"),
       false,
     ),
@@ -58,7 +58,7 @@ self.ast_builder.expression_call(
     ),
   ),
   self.ast_builder
-    .expression_identifier_reference(SPAN, "log"),
+    .expression_identifier(SPAN, "log"),
   NONE,
   false,
 )

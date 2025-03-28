@@ -30,7 +30,7 @@ impl JsToOxc {
       ObjectPropertyKind::SpreadProperty(property) => {
         let argument = self.gen_expression(&property.argument);
         quote! {
-          #ast_builder.object_property_kind_spread_element(#span, #argument)
+          #ast_builder.object_property_kind_spread_property(#span, #argument)
         }
       }
     }
@@ -51,7 +51,7 @@ impl JsToOxc {
       PropertyKey::StaticIdentifier(identifier) => {
         let name = identifier.name.as_str();
         quote! {
-          #ast_builder.property_key_identifier_name(#span, #name)
+          #ast_builder.property_key_static_identifier(#span, #name)
         }
       }
       PropertyKey::PrivateIdentifier(identifier) => {
@@ -63,7 +63,7 @@ impl JsToOxc {
       _ => {
         let expression = self.gen_expression(key.to_expression());
         quote! {
-          #ast_builder.property_key_expression(#expression)
+          PropertyKey::from(#expression)
         }
       }
     }

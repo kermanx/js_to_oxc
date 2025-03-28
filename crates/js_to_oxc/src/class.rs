@@ -50,8 +50,8 @@ impl JsToOxc {
         let accessibility = quote! { None };
         quote! {
           #ast_builder.class_element_method_definition(
-            #r#type,
             #span,
+            #r#type,
             #decorators,
             #key,
             #value,
@@ -80,8 +80,8 @@ impl JsToOxc {
         let accessibility = quote! { None };
         quote! {
           #ast_builder.class_element_property_definition(
-            #r#type,
             #span,
+            #r#type,
             #decorators,
             #key,
             #value,

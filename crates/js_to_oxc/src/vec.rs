@@ -1,7 +1,7 @@
 use crate::JsToOxc;
 use oxc::allocator::Vec;
 use proc_macro2::{Literal, TokenStream};
-use quote::{quote, TokenStreamExt};
+use quote::{TokenStreamExt, quote};
 
 impl JsToOxc {
   pub(crate) fn gen_vec<T, M>(&self, items: &Vec<T>, map: M) -> TokenStream

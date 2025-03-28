@@ -21,10 +21,9 @@ impl JsToOxc {
       }
       Expression::NumericLiteral(node) => {
         let value = node.value;
-        let raw = node.raw;
         let base = self.gen_number_base(&node.base);
         quote! {
-            #ast_builder.expression_numeric_literal(#span, #value, #raw, #base)
+            #ast_builder.expression_numeric_literal(#span, #value, None, #base)
         }
       }
       Expression::BigIntLiteral(node) => {
@@ -36,15 +35,14 @@ impl JsToOxc {
       }
       Expression::RegExpLiteral(node) => {
         let regex = self.gen_reg_exp(&node.regex);
-        let raw = node.raw;
         quote! {
-            #ast_builder.expression_reg_exp_literal(#span, #regex, #raw)
+            #ast_builder.expression_reg_exp_literal(#span, #regex, None)
         }
       }
       Expression::StringLiteral(node) => {
         let value = node.value.as_str();
         quote! {
-            #ast_builder.expression_string_literal(#span, #value)
+            #ast_builder.expression_string_literal(#span, #value, None)
         }
       }
       Expression::TemplateLiteral(node) => {
@@ -61,7 +59,7 @@ impl JsToOxc {
           return hole;
         }
         quote! {
-            #ast_builder.expression_identifier_reference(#span, #name)
+            #ast_builder.expression_identifier(#span, #name)
         }
       }
 
@@ -150,7 +148,7 @@ impl JsToOxc {
         let r#abstract = node.r#abstract;
         let declare = node.declare;
         quote! {
-          #ast_builder.expression_class(#r#type, #span, #decorators, #id, #type_parameters, #super_class, #super_type_parameters, #implements, #body, #r#abstract, #declare)
+          #ast_builder.expression_class(#span, #r#type, #decorators, #id, #type_parameters, #super_class, #super_type_parameters, #implements, #body, #r#abstract, #declare)
         }
       }
       Expression::ConditionalExpression(node) => {
@@ -175,14 +173,18 @@ impl JsToOxc {
         let return_type = quote! { NONE };
         let body = self.gen_option(&node.body, |body| self.gen_function_body(body));
         quote! {
-          #ast_builder.expression_function(#r#type, #span, #id, #generator, #r#async, #declare, #type_parameters, #this_param, #params, #return_type, #body)
+          #ast_builder.expression_function(#span, #r#type, #id, #generator, #r#async, #declare, #type_parameters, #this_param, #params, #return_type, #body)
         }
       }
       Expression::ImportExpression(node) => {
         let source = self.gen_expression(&node.source);
-        let arguments = self.gen_vec(&node.arguments, |expr| self.gen_expression(expr));
+        let options = self.gen_vec(&node.options, |expr| self.gen_expression(expr));
+        let phase = self.gen_option(&node.phase, |phase| match phase {
+          ImportPhase::Defer => quote! { ImportPhase::Defer },
+          ImportPhase::Source => quote! { ImportPhase::Source },
+        });
         quote! {
-          #ast_builder.expression_import(#span, #source, #arguments)
+          #ast_builder.expression_import(#span, #source, #options, #phase)
         }
       }
       Expression::LogicalExpression(node) => {
@@ -271,10 +273,9 @@ impl JsToOxc {
       }
       Expression::PrivateInExpression(node) => {
         let left = self.gen_private_identifier(&node.left);
-        let operator = self.gen_binary_operator(&node.operator);
         let right = self.gen_expression(&node.right);
         quote! {
-          #ast_builder.expression_private_in(#span, #left, #operator, #right)
+          #ast_builder.expression_private_in(#span, #left, #right)
         }
       }
 

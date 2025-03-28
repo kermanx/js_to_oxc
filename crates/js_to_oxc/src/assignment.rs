@@ -31,7 +31,7 @@ impl JsToOxc {
       SimpleAssignmentTarget::AssignmentTargetIdentifier(node) => {
         let name = node.name.as_str();
         quote! {
-          #ast_builder.simple_assignment_target_identifier_reference(#span, #name)
+          #ast_builder.simple_assignment_target_assignment_target_identifier(#span, #name)
         }
       }
       _ => {
